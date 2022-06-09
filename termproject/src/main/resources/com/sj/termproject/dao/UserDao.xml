@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sj.termproject.dao.UserDao">
+	<select id="test" resultType="string">
+		SELECT current_timestamp
+	</select>
+
+	<insert id="joinUser">
+		INSERT INTO member
+		(
+			user_id
+		  , user_wd
+		  , user_name 
+		  , phone1 
+		  , phone2 
+		  , phone3 
+		  , email1 
+		  , email2 
+		  , post 
+		  , addr1 
+		  , addr2 
+		)
+		VALUES
+		(
+			#{user_id}
+		  , #{user_wd}
+		  , #{user_name}
+		  , #{phone1}
+		  , #{phone2}
+		  , #{phone3}
+		  , #{email1}
+		  , #{email2}
+		  , #{post}
+		  , #{addr1}
+		  , #{addr2}
+		)
+	</insert>
+
+	<select id="idCheck" resultType="com.sj.termproject.dto.MemberDto">
+		SELECT user_id
+			 , user_wd
+			 , user_name
+			 , phone1
+			 , phone2
+			 , phone3
+			 , email1
+			 , email2
+			 , post
+			 , addr1
+			 , addr2
+			 , seller
+			 , join_date
+			 , update_date
+		  FROM member 
+    	 WHERE user_id = #{user_id}
+	</select>
+
+	<update id="editUser">
+		UPDATE member 
+		   SET phone1 = #{phone1}
+		   	 , phone2 = #{phone2}
+		   	 , phone3 = #{phone3}
+		   	 , email1 = #{email1}
+		   	 , email2 = #{email2}
+		   	 , post = #{post}
+		   	 , addr1 = #{addr1}
+		   	 , addr2 = #{addr2}
+		   	 , update_date = CURRENT_TIMESTAMP
+		 WHERE user_id = #{user_id}
+	</update>
+	
+	<select id="idSearch" resultType="com.sj.termproject.dto.MemberDto">
+		SELECT user_id
+			 , user_wd
+			 , user_name
+			 , phone1
+			 , phone2
+			 , phone3
+			 , email1
+			 , email2
+			 , post
+			 , addr1
+			 , addr2
+			 , seller
+			 , join_date
+		  FROM member 
+    	 WHERE ( email1 = #{email1} AND email2 = #{email2} )
+		   AND ( phone1 = #{phone1} AND phone2 = #{phone2} AND phone3 = #{phone3} )
+	</select>
+	
+	<select id="userSearch" resultType="com.sj.termproject.dto.MemberDto">
+		SELECT user_id
+			 , user_wd
+			 , user_name
+			 , phone1
+			 , phone2
+			 , phone3
+			 , email1
+			 , email2
+			 , post
+			 , addr1
+			 , addr2
+			 , seller
+			 , join_date
+		  FROM member 
+    	 WHERE ( email1 = #{email1} AND email2 = #{email2} )
+    	   AND user_id = #{user_id} 
+	</select>
+	
+	<update id="passEdit">
+		UPDATE member 
+		   SET user_wd = #{user_wd}
+		     , update_date = CURRENT_TIMESTAMP
+		 WHERE user_id = #{user_id}
+	</update>
+
+	<delete id="deleteUser">
+		DELETE FROM member 
+		 WHERE user_id = #{user_id}
+	</delete>
+
+	<update id="sellerApply">
+		UPDATE member 
+		   SET seller = 'S'
+		 WHERE user_id = #{user_id}
+	</update>
+
+	<select id="list1" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT ab.content_no
+			 , ab.image0
+			 , ab.title
+			 , ab.head
+			 , rs.class_date
+			 , rs.reserve_num
+			 , rs.reserve_no
+			 , rs.user_id
+		  FROM agency_board ab
+		  	   JOIN reservation rs
+			   USING(content_no) 
+    	 WHERE rs.content_no IN (SELECT content_no 
+    	 						   FROM reservation 
+   	 						   	  WHERE user_id = #{user_id})
+		   AND rs.user_id = #{user_id}
+		   AND rs.reserve_condition = 'Y'
+		   AND rs.class_date > DATE_FORMAT(now(), '%Y-%m-%d')
+		   AND ab.board_condition = 'Y'
+	  	 ORDER BY class_date DESC
+	</select>
+
+	<select id="list2" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		<![CDATA[
+		SELECT ab.content_no
+			 , ab.image0
+			 , ab.title
+			 , ab.head
+			 , rs.class_date
+			 , rs.reserve_num
+			 , rs.reserve_no
+			 , rs.user_id
+			 , cr.review_date
+		  FROM agency_board ab 
+			   JOIN reservation rs 
+			   USING(content_no) 
+			   LEFT JOIN class_review cr
+			   USING(reserve_no)
+		 WHERE rs.content_no IN (SELECT content_no 
+		 						   FROM reservation 
+		 						  WHERE user_id = #{user_id}) 
+		   AND rs.user_id = #{user_id} 
+		   AND rs.reserve_condition = 'Y'
+		   AND rs.class_date <= DATE_FORMAT(now(), '%Y-%m-%d')
+   		   AND ab.board_condition = 'Y'
+		 ORDER BY class_date DESC
+		]]>
+	</select>
+	
+	<update id="reserveDelete">
+		UPDATE reservation
+		   SET reserve_condition = 'N' 
+		 WHERE reserve_no = #{reserve_no}
+	</update>
+		
+	<insert id="reviewWrite">
+		INSERT INTO class_review
+		(
+			reserve_no
+		  , user_id 
+		  , content_no 
+		  , review_content 
+		)
+		VALUES
+		(
+			#{reserve_no}
+		  , #{user_id}
+		  , #{content_no}
+		  , #{review_content}
+		)
+	</insert>
+	
+</mapper>

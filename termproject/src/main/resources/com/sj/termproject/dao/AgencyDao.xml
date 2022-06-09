@@ -1,0 +1,427 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sj.termproject.dao.AgencyDao">
+	<select id="agencyInfo" resultType="com.sj.termproject.dto.MemberDto">
+		SELECT user_id
+			 , user_wd
+			 , user_name
+			 , phone1
+			 , phone2
+			 , phone3
+			 , email1
+			 , email2
+			 , post
+			 , addr1
+			 , addr2
+			 , seller
+			 , join_date
+		  FROM member 
+		 WHERE user_id = #{user_id}
+	</select>
+
+	<insert id="writeClass">
+		INSERT INTO agency_board
+		(
+			user_id
+		  , title 
+		  , agency 
+		  , ps_num 
+		  , category 
+		  , image0 
+		  , head 
+		  , body 
+		  , image1 
+		  , youtube 
+		  , cl_addr 
+		  , start_date 
+		  , end_date 
+		  , start_time 
+		  , end_time 
+		)
+		VALUES
+		(
+			#{user_id}
+		  , #{title}
+		  , #{agency}
+		  , #{ps_num}
+		  , #{category}
+		  , #{image0}
+		  , #{head}
+		  , #{body}
+		  , #{image1}
+		  , #{youtube}
+		  , #{cl_addr}
+		  , #{start_date}
+		  , #{end_date}
+		  , #{start_time}
+		  , #{end_time}
+		)
+	</insert>
+	
+	<select id="newestList" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT content_no 
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board 
+		 WHERE board_condition = 'Y'
+		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+		 ORDER BY write_date DESC 
+		 LIMIT 0, 4
+	</select>
+
+	<select id="list" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT content_no 
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board 
+		 WHERE end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+		   AND board_condition = 'Y'
+		   <if test='category != "전체"'>
+		   AND category = #{category} 
+		   </if>
+	     ORDER BY write_date DESC
+	</select>
+	
+	<select id="endList" resultType="com.sj.termproject.dto.AgencyBoardDto">
+	<![CDATA[
+		SELECT content_no 
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board 
+		 WHERE end_date < DATE_FORMAT(now(), '%Y-%m-%d') ]]>
+		   AND board_condition = 'Y'
+		   <if test='category != "전체"'>
+		   AND category = #{category} 
+		   </if>
+	     ORDER BY write_date DESC	
+	</select>
+	
+	<select id="classDetail" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT content_no 
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board  
+		 WHERE content_no = #{content_no}
+	</select>	
+	
+	<select id="reserveSearch" resultType="com.sj.termproject.dto.ReservationDto">
+		select reserve_no
+			 , user_id
+			 , content_no
+			 , ps_num
+			 , class_date
+			 , reserve_num
+			 , reserve_time
+		  FROM reservation 
+		 WHERE content_no = #{content_no}
+		   AND reserve_condition = 'Y'
+		   <if test="class_date != null"> 
+		   AND class_date = #{class_date} 
+		   </if>
+	</select>
+	
+	<select id="reserveNum" resultType="int">
+		select COALESCE(SUM(reserve_num),0)
+		  FROM reservation 
+		 WHERE content_no = #{content_no}
+		   AND reserve_condition = 'Y'
+		   <if test="class_date != null"> 
+		   AND class_date = #{class_date} 
+		   </if>
+	</select>
+	
+	<insert id="reserve">
+		INSERT INTO reservation
+		(
+			user_id
+		  , content_no 
+		  , ps_num 
+		  , class_date 
+		  , reserve_num 
+		)
+		VALUES
+		(
+			#{user_id} 
+		  , #{content_no}
+		  , #{ps_num}
+		  , #{class_date}
+		  , #{reserve_num}
+		)
+	</insert>
+
+	<select id="reserveChecked" resultType="com.sj.termproject.dto.ReservationDto">
+		select reserve_no
+			 , user_id
+			 , content_no
+			 , ps_num
+			 , class_date
+			 , reserve_num
+			 , reserve_time
+		  FROM reservation 
+		 WHERE content_no = #{content_no}
+		   AND user_id = #{user_id} 
+		   AND class_date = #{class_date} 
+		   AND reserve_condition = 'Y'
+	</select>
+
+	<select id="favoriteList" resultType="com.sj.termproject.dto.FavoriteDto">
+		SELECT content_no
+		 	 , user_id
+		 	 , favorite_date
+		 	 , favorite_condition
+		  FROM favorite 
+		 WHERE content_no = #{content_no} 
+		   AND user_id = #{user_id}
+	</select>
+	
+	<insert id="favoriteInsert">
+		INSERT INTO favorite
+		(
+			content_no
+		  , user_id 
+		)
+		VALUES
+		(
+			#{content_no}
+		  , #{user_id}
+		)
+	</insert>
+	
+	<update id="favoriteInsert2">
+		UPDATE favorite
+		   SET favorite_condition = 'Y'
+		     , favorite_date = CURRENT_TIMESTAMP
+		 WHERE content_no = #{content_no}
+		   AND user_id = #{user_id}
+	</update>
+	
+	<update id="favoriteDelete">
+		UPDATE favorite
+		   SET favorite_condition = 'N'
+		     , favorite_date = CURRENT_TIMESTAMP
+		 WHERE content_no = #{content_no}
+		   AND user_id = #{user_id}
+	</update>
+	
+	<select id="favoriteNo" resultType="int">
+		SELECT content_no 
+		  FROM favorite 
+	 	 WHERE user_id = #{user_id}
+ 		   AND favorite_condition = 'Y'
+	</select>
+	
+	<select id="favoriteClass" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT content_no
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board 
+		 WHERE content_no IN (SELECT content_no 
+								FROM favorite 
+							   WHERE user_id = #{user_id}
+				       		     AND favorite_condition = 'Y')
+		   AND board_condition = 'Y'
+  		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+	</select>
+	
+	<select id="reviewList" resultType="com.sj.termproject.dto.ClassReviewDto">
+		SELECT cr.review_no
+			 , cr.reserve_no
+			 , cr.user_id
+			 , cr.content_no
+			 , cr.review_content
+			 , cr.review_date
+			 , mb.user_id
+		  FROM class_review cr
+		  	   JOIN member mb 
+		  	   USING(user_id) 
+		 WHERE content_no = #{content_no} 
+		 ORDER BY review_date DESC
+	</select>
+	
+	<insert id="classRequest">
+		INSERT INTO board_request
+		(
+			content_no 
+		  , user_id 
+		  , request_type 
+		  , request_title 
+		  , request_content 
+		)
+		VALUES
+		(
+			#{content_no}
+		  , #{user_id}
+		  , #{request_type}
+		  , #{request_title}
+		  , #{request_content}
+		)
+	</insert>
+	
+	<select id="requestList" resultType="com.sj.termproject.dto.BoardRequestDto">
+		SELECT br.request_no
+			 , br.content_no
+			 , br.user_id
+			 , br.request_type
+			 , br.request_title
+			 , br.request_content
+			 , br.request_condition
+			 , br.request_date
+			 , ab.title
+			 , ab.start_date
+			 , ab.end_date
+			 , ab.head
+		  FROM board_request br 
+			   JOIN agency_board ab 
+			   USING(content_no)
+		 WHERE br.content_no IN (SELECT content_no 
+								   FROM board_request 
+								  WHERE user_id = #{user_id})
+		 ORDER BY request_date DESC
+	</select>
+	
+	<select id="myClassList" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT content_no 
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board
+		 WHERE user_id = #{user_id}
+		   AND board_condition = 'Y'
+		   <if test="state == 0">
+   		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+		   </if>
+		   <if test="state == 1">
+ <![CDATA[ AND end_date < DATE_FORMAT(now(), '%Y-%m-%d') ]]>
+		   </if>
+	</select>
+
+	<select id="searchList" resultType="com.sj.termproject.dto.AgencyBoardDto">
+		SELECT content_no 
+			 , user_id 
+			 , title 
+		     , agency 
+	   	     , ps_num 
+		     , category 
+		     , write_date 
+		     , image0 
+		     , head 
+		     , body 
+		     , image1 
+		     , youtube 
+		     , cl_addr 
+		     , start_date 
+		     , end_date 
+		     , start_time 
+		     , end_time 
+		  FROM agency_board
+		 WHERE title LIKE CONCAT('%',#{query},'%')
+ 		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+ 		 ORDER BY write_date DESC
+	</select>
+	
+	<select id="reserveUserList" resultType="com.sj.termproject.dto.ReservationDto">
+		SELECT mb.user_name
+			 , mb.phone1
+			 , mb.phone2
+			 , mb.phone3
+			 , mb.email1
+			 , mb.email2
+	 	  	 , rs.reserve_no
+	 	  	 , rs.class_date
+	  		 , rs.reserve_num
+		  FROM member mb
+		  JOIN reservation rs
+		 USING (user_id)
+		 WHERE mb.user_id in (SELECT user_id 
+		 							FROM reservation 
+								  WHERE content_no = #{content_no})
+		   AND rs.content_no = #{content_no}
+		   AND rs.reserve_condition = 'Y'
+		 ORDER BY rs.class_date DESC
+	</select>
+</mapper>
