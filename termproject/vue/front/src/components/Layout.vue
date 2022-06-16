@@ -55,14 +55,12 @@
       <v-card flat tile width="100%" class="secondary white--text text-center">
         <v-card-text class="white--text pt-0">
           <p>COPYRIGHT © 재능거래 플랫폼, inc All rights reserved</p>
-          <p>본 사이트는 포트 폴리오 사이트로 제작되어 상업적 목적이 아닙니다.</p>
-          <!-- <p>본 사이트는 OJT TERMPROJECT 사이트로 제작되어 상업적 목적이 아닙니다.</p> -->
+          <p>본 사이트는 OJT TERMPROJECT 사이트로 제작되어 상업적 목적이 아닙니다.</p>
           <p>사용된 일부 이미지 및 폰트 등은 별도의 출처가 있음을 밝혀 드립니다.</p>
           <v-divider></v-divider>
           <v-divider></v-divider>
           <p></p>
-          <p>NAME: 박상준 / PHONE:000-2535-3146 / E-MAIL: qlla1452@naver.com</p>
-          <!-- <p>NAME: 박상준 / PHONE:000-2535-3146 / E-MAIL: Sangjun.Park@ta9.co.kr</p> -->
+          <p>NAME: 박상준 / PHONE:000-2535-3146 / E-MAIL: Sangjun.Park@ta9.co.kr</p>
         </v-card-text>
       </v-card>
     </v-footer>

@@ -146,7 +146,7 @@
 		   AND rs.reserve_condition = 'Y'
 		   AND rs.class_date > DATE_FORMAT(now(), '%Y-%m-%d')
 		   AND ab.board_condition = 'Y'
-	  	 ORDER BY class_date DESC
+	  	 ORDER BY class_date
 	</select>
 
 	<select id="list2" resultType="com.sj.termproject.dto.AgencyBoardDto">
@@ -186,17 +186,21 @@
 		INSERT INTO class_review
 		(
 			reserve_no
-		  , user_id 
-		  , content_no 
 		  , review_content 
 		)
 		VALUES
 		(
 			#{reserve_no}
-		  , #{user_id}
-		  , #{content_no}
 		  , #{review_content}
 		)
 	</insert>
+	
+	<select id="reviewChecked" resultType="com.sj.termproject.dto.ClassReviewDto">
+		SELECT reserve_no
+			 , review_content
+			 , review_date
+		  FROM class_review
+		 WHERE reserve_no = #{reserve_no} 
+	</select>
 	
 </mapper>

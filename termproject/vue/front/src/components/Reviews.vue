@@ -5,7 +5,7 @@
       <div class="review-count">{{ reviewsCnt }}개의 후기</div>
       <button @click.prevent="review" class="btn_write_review">후기 작성하기</button>
     </div>
-    <div v-if="reTf && reAfTf" class="review_wrap" style="border: ridge;">
+    <div v-if="reTf" class="review_wrap" style="border: ridge;">
       <div class="txt">
         <div class="txt_id">내용</div>
         <div class="txt_date">
@@ -45,7 +45,6 @@ export default {
       reviews: [],
       review_content: "",
       reTf: false,
-      reAfTf: true,
       reviewsCnt: 0
     };
   },
@@ -66,11 +65,17 @@ export default {
         alert("참여하지 않은 클래스입니다.\n후기는 참여완료 후 작성할 수 있습니다.");
         return false;
       }
-      if (this.reAfTf == false) {
-        alert("이미 후기를 작성했습니다.");
-        return false;
-      }
-      this.reTf = true;
+      const params = new URLSearchParams();
+      params.append("reserve_no", this.reserve_no);
+      this.$axios.post("/api/reviewChecked", params).then(res => {
+        if (res.data) {
+          alert("이미 후기를 작성했습니다.");
+          this.reTf = false;
+          return false;
+        } else{
+          this.reTf = true;
+        }
+      });
     },
     reviewWrite() {
       if (this.review_content.length > 500) {
@@ -88,7 +93,7 @@ export default {
           if (res.data) {
             this.reviews = res.data;
             this.reviewsCnt = res.data.length;
-            this.reAfTf = false;
+            this.reTf = false;
             alert("후기 작성 완료");
           }
         });

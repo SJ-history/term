@@ -14,6 +14,7 @@
         <v-col :cols="12">
           <v-card-text tile outlined>
             <v-card-title class="subheading ">최신 클래스!</v-card-title>
+
             <v-divider></v-divider>
 
             <div class="row">

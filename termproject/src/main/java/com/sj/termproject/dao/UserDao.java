@@ -36,4 +36,6 @@ public interface UserDao {
 	public int reserveDelete(ReservationDto dto);
 
 	public int reviewWrite(ClassReviewDto dto);
+
+	public ClassReviewDto reviewChecked(ClassReviewDto dto);
 }

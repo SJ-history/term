@@ -102,13 +102,13 @@ export default {
       this.$router.go(-1);
     },
     manageRequest() {
-      if (this.manageCode == "") {
+      if (this.request_type == "") {
         alert("요청 유형을 등록해주세요.");
         return false;
-      } else if (this.manageTitle == "") {
-        alert("요청 제목을 등록해주세요.");
+      } else if (this.request_title == "" || this.request_title.length > 100) {
+        alert("요청 제목을 등록해주세요.\n최대 100글자");
         return false;
-      } else if (this.manageContent == "") {
+      } else if (this.request_content == "") {
         alert("요청 내용을 등록해주세요.");
         return false;
       }

@@ -33,4 +33,6 @@ public interface UserService {
 	public int reserveDelete(ReservationDto dto);
 
 	public int reviewWrite(ClassReviewDto dto);
+
+	public ClassReviewDto reviewChecked(ClassReviewDto dto);
 }

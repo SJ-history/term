@@ -203,11 +203,13 @@ export default {
       var email2 = document.getElementById("email2").value;
 
       // 이름 글자수 및 한글 정규식
-      var nameTest = /^[가-힣]{2,6}$/;
+      var nameTest = /^[가-힣]{2,20}$/;
       // 아이디 정규식
       var idTest = /^[A-Za-z]{1}[A-Za-z0-9]{3,20}$/;
       // 비밀번호 정규식
       var pwTest = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[$@$!%*#?&])[A-Za-z\d$@$!%*#?&]{8,20}$/;
+      // 우편번호 숫자5자리 정규식
+      var postTest = /^[0-9]{5}$/g;
       // 전화번호 글자수 및 한글 정규식
       var phoneTest = /^([0-9]{3,4})$/;
       // 이메일 앞 글자수 정규식
@@ -216,7 +218,7 @@ export default {
       var emailTest2 = /^([a-z0-9\-]+\.)+[a-z]{2,6}$/;
 
       if (!nameTest.test(user_name)) {
-        alert("이름을 확인해주세요!(공백 X)\n이름은 한글만 입력 가능하며 \n최대 6자 이내 까지 입력이 가능합니다.");
+        alert("이름을 확인해주세요!(공백 X)\n이름은 한글만 입력 가능하며 \n최대 2~20자 이내 까지 입력이 가능합니다.");
         document.getElementById("user_name").focus();
         return false;
       } else if (!idTest.test(user_id)) {
@@ -226,6 +228,10 @@ export default {
       } else if (!pwTest.test(user_wd)) {
         alert("비밀번호를 확인해주세요!(공백 X)\n특수문자 포함 8~20자 이내 까지 입력이 가능합니다.");
         document.getElementById("user_wd").focus();
+        return false;
+      } else if (!postTest.test(post)) {
+        alert("우편번호를 확인해주세요.");
+        document.getElementById("post").focus();
         return false;
       } else if (post == "" || addr1 == "" || addr2 == "") {
         alert("주소를 입력해주세요");

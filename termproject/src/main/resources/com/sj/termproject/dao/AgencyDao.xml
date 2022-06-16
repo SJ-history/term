@@ -17,7 +17,7 @@
 			 , addr2
 			 , seller
 			 , join_date
-		  FROM member 
+		  FROM member
 		 WHERE user_id = #{user_id}
 	</select>
 
@@ -25,26 +25,24 @@
 		INSERT INTO agency_board
 		(
 			user_id
-		  , title 
-		  , agency 
-		  , ps_num 
-		  , category 
-		  , image0 
-		  , head 
-		  , body 
-		  , image1 
-		  , youtube 
-		  , cl_addr 
-		  , start_date 
-		  , end_date 
-		  , start_time 
-		  , end_time 
+		  , title
+		  , ps_num
+		  , category
+		  , image0
+		  , head
+		  , body
+		  , image1
+		  , youtube
+		  , cl_addr
+		  , start_date
+		  , end_date
+		  , start_time
+		  , end_time
 		)
 		VALUES
 		(
 			#{user_id}
 		  , #{title}
-		  , #{agency}
 		  , #{ps_num}
 		  , #{category}
 		  , #{image0}
@@ -61,53 +59,51 @@
 	</insert>
 	
 	<select id="newestList" resultType="com.sj.termproject.dto.AgencyBoardDto">
-		SELECT content_no 
-			 , user_id 
-			 , title 
-		     , agency 
-	   	     , ps_num 
-		     , category 
-		     , write_date 
-		     , image0 
-		     , head 
-		     , body 
-		     , image1 
-		     , youtube 
-		     , cl_addr 
-		     , start_date 
-		     , end_date 
-		     , start_time 
-		     , end_time 
-		  FROM agency_board 
+		SELECT content_no
+			 , user_id
+			 , title
+	   	     , ps_num
+		     , category
+		     , write_date
+		     , image0
+		     , head
+		     , body
+		     , image1
+		     , youtube
+		     , cl_addr
+		     , start_date
+		     , end_date
+		     , start_time
+		     , end_time
+		  FROM agency_board
 		 WHERE board_condition = 'Y'
 		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
-		 ORDER BY write_date DESC 
+		 ORDER BY write_date DESC
 		 LIMIT 0, 4
 	</select>
 
 	<select id="list" resultType="com.sj.termproject.dto.AgencyBoardDto">
-		SELECT content_no 
-			 , user_id 
-			 , title 
-		     , agency 
-	   	     , ps_num 
-		     , category 
-		     , write_date 
-		     , image0 
-		     , head 
-		     , body 
-		     , image1 
-		     , youtube 
-		     , cl_addr 
-		     , start_date 
-		     , end_date 
-		     , start_time 
-		     , end_time 
-		  FROM agency_board 
+		SELECT content_no
+			 , user_id
+			 , title
+	   	     , ps_num
+		     , category
+		     , write_date
+		     , image0
+		     , head
+		     , body
+		     , image1
+		     , youtube
+		     , cl_addr
+		     , start_date
+		     , end_date
+		     , start_time
+		     , end_time
+		  FROM agency_board
 		 WHERE end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
 		   AND board_condition = 'Y'
 		   <if test='category != "전체"'>
-		   AND category = #{category} 
+		   AND category = #{category}
 		   </if>
 	     ORDER BY write_date DESC
 	</select>
@@ -117,7 +113,6 @@
 		SELECT content_no 
 			 , user_id 
 			 , title 
-		     , agency 
 	   	     , ps_num 
 		     , category 
 		     , write_date 
@@ -144,7 +139,6 @@
 		SELECT content_no 
 			 , user_id 
 			 , title 
-		     , agency 
 	   	     , ps_num 
 		     , category 
 		     , write_date 
@@ -215,10 +209,10 @@
 			 , class_date
 			 , reserve_num
 			 , reserve_time
-		  FROM reservation 
+		  FROM reservation
 		 WHERE content_no = #{content_no}
-		   AND user_id = #{user_id} 
-		   AND class_date = #{class_date} 
+		   AND user_id = #{user_id}
+		   AND class_date = #{class_date}
 		   AND reserve_condition = 'Y'
 	</select>
 
@@ -227,8 +221,8 @@
 		 	 , user_id
 		 	 , favorite_date
 		 	 , favorite_condition
-		  FROM favorite 
-		 WHERE content_no = #{content_no} 
+		  FROM favorite
+		 WHERE content_no = #{content_no}
 		   AND user_id = #{user_id}
 	</select>
 	
@@ -236,7 +230,7 @@
 		INSERT INTO favorite
 		(
 			content_no
-		  , user_id 
+		  , user_id
 		)
 		VALUES
 		(
@@ -262,51 +256,52 @@
 	</update>
 	
 	<select id="favoriteNo" resultType="int">
-		SELECT content_no 
-		  FROM favorite 
+		SELECT content_no
+		  FROM favorite
 	 	 WHERE user_id = #{user_id}
  		   AND favorite_condition = 'Y'
 	</select>
 	
 	<select id="favoriteClass" resultType="com.sj.termproject.dto.AgencyBoardDto">
-		SELECT content_no
-			 , user_id 
-			 , title 
-		     , agency 
-	   	     , ps_num 
-		     , category 
-		     , write_date 
-		     , image0 
-		     , head 
-		     , body 
-		     , image1 
-		     , youtube 
-		     , cl_addr 
-		     , start_date 
-		     , end_date 
-		     , start_time 
-		     , end_time 
-		  FROM agency_board 
-		 WHERE content_no IN (SELECT content_no 
-								FROM favorite 
-							   WHERE user_id = #{user_id}
-				       		     AND favorite_condition = 'Y')
-		   AND board_condition = 'Y'
-  		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+		SELECT ab.content_no
+			 , ab.title
+	   	     , ab.ps_num
+		     , ab.category
+		     , ab.write_date
+		     , ab.image0
+		     , ab.head
+		     , ab.body
+		     , ab.image1
+		     , ab.youtube
+		     , ab.cl_addr
+		     , ab.start_date
+		     , ab.end_date
+		     , ab.start_time
+		     , ab.end_time
+		     , fv.user_id
+			 , fv.favorite_date
+		  FROM agency_board ab
+		  	   JOIN favorite fv
+  		 	   USING(content_no)
+		 WHERE (ab.content_no, fv.user_id) IN (SELECT content_no
+													, user_id
+												 FROM favorite
+											    WHERE user_id = #{user_id}
+								       		      AND favorite_condition = 'Y')
+		   AND ab.board_condition = 'Y'
+  		   AND ab.end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+		 ORDER BY fv.favorite_date DESC
 	</select>
 	
 	<select id="reviewList" resultType="com.sj.termproject.dto.ClassReviewDto">
-		SELECT cr.review_no
-			 , cr.reserve_no
-			 , cr.user_id
-			 , cr.content_no
+		SELECT cr.reserve_no
 			 , cr.review_content
 			 , cr.review_date
-			 , mb.user_id
+			 , rs.user_id
 		  FROM class_review cr
-		  	   JOIN member mb 
-		  	   USING(user_id) 
-		 WHERE content_no = #{content_no} 
+		  	   JOIN reservation rs 
+		  	   USING(reserve_no) 
+		 WHERE rs.content_no = #{content_no} 
 		 ORDER BY review_date DESC
 	</select>
 	
@@ -314,7 +309,6 @@
 		INSERT INTO board_request
 		(
 			content_no 
-		  , user_id 
 		  , request_type 
 		  , request_title 
 		  , request_content 
@@ -322,7 +316,6 @@
 		VALUES
 		(
 			#{content_no}
-		  , #{user_id}
 		  , #{request_type}
 		  , #{request_title}
 		  , #{request_content}
@@ -332,7 +325,6 @@
 	<select id="requestList" resultType="com.sj.termproject.dto.BoardRequestDto">
 		SELECT br.request_no
 			 , br.content_no
-			 , br.user_id
 			 , br.request_type
 			 , br.request_title
 			 , br.request_content
@@ -346,7 +338,7 @@
 			   JOIN agency_board ab 
 			   USING(content_no)
 		 WHERE br.content_no IN (SELECT content_no 
-								   FROM board_request 
+								   FROM agency_board
 								  WHERE user_id = #{user_id})
 		 ORDER BY request_date DESC
 	</select>
@@ -355,7 +347,6 @@
 		SELECT content_no 
 			 , user_id 
 			 , title 
-		     , agency 
 	   	     , ps_num 
 		     , category 
 		     , write_date 
@@ -384,7 +375,6 @@
 		SELECT content_no 
 			 , user_id 
 			 , title 
-		     , agency 
 	   	     , ps_num 
 		     , category 
 		     , write_date 
@@ -401,6 +391,7 @@
 		  FROM agency_board
 		 WHERE title LIKE CONCAT('%',#{query},'%')
  		   AND end_date >= DATE_FORMAT(now(), '%Y-%m-%d')
+   		   AND board_condition = 'Y'
  		 ORDER BY write_date DESC
 	</select>
 	

@@ -80,4 +80,9 @@ public class UserServiceImpl implements UserService {
 	public int reviewWrite(ClassReviewDto dto) {
 		return dao.reviewWrite(dto);
 	}
+
+	@Override
+	public ClassReviewDto reviewChecked(ClassReviewDto dto) {
+		return dao.reviewChecked(dto);
+	}
 }

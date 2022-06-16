@@ -172,17 +172,65 @@ export default {
           alert("비밀번호를 입력해주세요");
           document.getElementById("user_wd").focus;
         } else {
+          var post = document.getElementById("post").value;
+          var addr1 = document.getElementById("addr1").value;
+          var addr2 = document.getElementById("addr2").value;
+          var phone1 = document.getElementById("phone1").value;
+          var phone2 = document.getElementById("phone2").value;
+          var phone3 = document.getElementById("phone3").value;
+          var email1 = document.getElementById("email1").value;
+          var email2 = document.getElementById("email2").value;
+
+          // 우편번호 숫자5자리 정규식
+          var postTest = /^[0-9]{5}$/g;
+          // 전화번호 글자수 및 한글 정규식
+          var phoneTest = /^([0-9]{3,4})$/;
+          // 이메일 앞 글자수 정규식
+          var emailTest1 = /^[a-z0-9\.\-_]{4,40}$/;
+          // 이메일 뒤 글자수 정규식
+          var emailTest2 = /^([a-z0-9\-]+\.)+[a-z]{2,6}$/;
+
+          if (!postTest.test(post)) {
+            alert("우편번호를 확인해주세요.");
+            document.getElementById("post").focus();
+            return false;
+          } else if (post == "" || addr1 == "" || addr2 == "") {
+            alert("주소를 입력해주세요");
+            document.getElementById("post").focus();
+            return false;
+          } else if (phone1 == "" || phone2 == "" || phone3 == "") {
+            alert("핸드폰 번호를 입력해주세요");
+            document.getElementById("phone1").focus();
+            return false;
+          } else if (!phoneTest.test(phone2)) {
+            alert("핸드폰 번호를 확인 해주세요(중간 번호)\n숫자만 입력 가능(3 ~ 4자리)");
+            document.getElementById("phone2").focus();
+            return false;
+          } else if (!phoneTest.test(phone3)) {
+            alert("핸드폰 번호를 확인 해주세요(끝 번호)\n숫자만 입력 가능(3 ~ 4자리)");
+            document.getElementById("phone3").focus();
+            return false;
+          } else if (!emailTest1.test(email1)) {
+            alert("이메일을 확인 해주세요(앞)\n최대 40 글자");
+            document.getElementById("email1").focus();
+            return false;
+          } else if (!emailTest2.test(email2)) {
+            alert("이메일을 확인 해주세요(뒤)\n최대 20 글자");
+            document.getElementById("email2").focus();
+            return false;
+          }
+
           const params = new URLSearchParams();
           params.append("user_id", this.$session.get("userInfo"));
           params.append("user_wd", user_wd);
-          params.append("post", document.getElementById("post").value);
-          params.append("addr1", document.getElementById("addr1").value);
-          params.append("addr2", document.getElementById("addr2").value);
-          params.append("phone1", document.getElementById("phone1").value);
-          params.append("phone2", document.getElementById("phone2").value);
-          params.append("phone3", document.getElementById("phone3").value);
-          params.append("email1", document.getElementById("email1").value);
-          params.append("email2", document.getElementById("email2").value);
+          params.append("post", post);
+          params.append("addr1", addr1);
+          params.append("addr2", addr2);
+          params.append("phone1", phone1);
+          params.append("phone2", phone2);
+          params.append("phone3", phone3);
+          params.append("email1", email1);
+          params.append("email2", email2);
 
           this.$axios.post("/api/infoEdit", params).then(res => {
             if (res.data.includes("success")) {

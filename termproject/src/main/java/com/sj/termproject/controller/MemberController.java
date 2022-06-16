@@ -63,7 +63,7 @@ public class MemberController {
 	 * Join.vue
 	 */
 	@PostMapping("/join")
-	public String Join(MemberDto dto) throws Exception {
+	public String Join(MemberDto dto) {
 		String encodedPassword = passwordEncoder.encode(dto.getUser_wd());
 		dto.setUser_wd(encodedPassword);
 		if (service.joinUser(dto) > 0) {
@@ -167,8 +167,8 @@ public class MemberController {
 					content += (int) (Math.random() * 10);
 				}
 				String host = "smtp.naver.com";
-				final String user = "qlla1452@naver.com";
-				final String password = "tkdwns3146!@";
+				final String user = "qkrtkdwns1323@naver.com";
+				final String password = "tkdwns1323!@";
 				String to = mail;
 				Properties props = new Properties();
 				props.put("mail.smtp.host", host);
@@ -187,7 +187,7 @@ public class MemberController {
 					message.setFrom(new InternetAddress(user));
 					message.addRecipient(Message.RecipientType.TO, new InternetAddress(to));
 					message.setSubject(subject);
-					// message.setText("메일 본문 내용 HTML 코딩");
+					// message.setText("메일 본문 x내용 HTML 코딩");
 					message.setText(content);
 					message.setContent(content, "text/html;charset=euc-kr");
 					Transport.send(message);
@@ -277,8 +277,8 @@ public class MemberController {
 					content += (int) (Math.random() * 10);
 				}
 				String host = "smtp.naver.com";
-				final String user = "qlla1452@naver.com";
-				final String password = "tkdwns3146!@";
+				final String user = "qkrtkdwns1323@naver.com";
+				final String password = "tkdwns1323!@";
 				String to = mail;
 				Properties props = new Properties();
 				props.put("mail.smtp.host", host);
@@ -352,5 +352,17 @@ public class MemberController {
 		} else {
 			return null;
 		}
+	}
+	
+	/** 
+	 * 후기 작성 여부 리턴
+	 * Reviews.vue
+	 */
+	@PostMapping("/reviewChecked")
+	public String reviewChecked(ClassReviewDto dto) {
+		if(service.reviewChecked(dto) != null) {
+			return "checked";
+		}
+		return null;
 	}
 }
