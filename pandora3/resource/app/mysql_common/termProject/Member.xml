@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Member">
+	<select id="selectMemberList" parameterType="ParameterMap" resultType="MemberDto">
+		SELECT user_id
+			 , user_name
+			 , phone1
+			 , phone2
+			 , phone3
+			 , email1
+			 , email2
+			 , post
+			 , addr1
+			 , addr2
+			 , seller
+			 , join_date
+			 , update_date
+		  FROM member
+         WHERE 1 = 1
+		   <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(user_name)">
+	       AND user_name LIKE CONCAT('%',#{user_name, jdbcType=VARCHAR}, '%')
+           </if>
+	       <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(id)">
+	       AND user_id LIKE CONCAT('%',#{id, jdbcType=VARCHAR}, '%')
+           </if>
+         ORDER BY join_date DESC
+	</select>
+		
+	<delete id="deleteMember" parameterType="MemberDto" >
+		DELETE FROM member 
+		 WHERE user_id = #{user_id}
+	</delete>
+	
+	<select id="memberApplyList" parameterType="ParameterMap" resultType="MemberDto">
+		SELECT user_id
+			 , user_name
+			 , email1
+			 , email2
+			 , join_date
+		  FROM member
+         WHERE 1 = 1
+		   <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(user_name)">
+	       AND user_name LIKE CONCAT('%',#{user_name, jdbcType=VARCHAR}, '%')
+           </if>
+	       <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(id)">
+	       AND user_id LIKE CONCAT('%',#{id, jdbcType=VARCHAR}, '%')
+           </if> 
+		   AND seller = 'S'
+		 ORDER BY join_date DESC
+	</select>
+	
+	<update id="ApplyAccess" parameterType="MemberDto" >
+		UPDATE member 
+		   SET seller = 'Y' 
+		 WHERE user_id = #{id}
+	</update>
+	
+	<update id="ApplyDelete" parameterType="MemberDto" >
+		UPDATE member 
+		   SET seller = 'N'
+		 WHERE user_id = #{id}
+	</update>
+
+</mapper>

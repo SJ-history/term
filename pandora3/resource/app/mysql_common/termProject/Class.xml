@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="Class">
+	<select id="selectClassList" parameterType="ParameterMap" resultType="AgencyBoardDto">
+		SELECT * 
+		  FROM (SELECT CEIL(V.ID / #{rows, jdbcType=NUMERIC})        	AS PAGE        /* 페이지 번호 */
+	                 , CEIL(@ROW_NUMBER / #{rows, jdbcType=NUMERIC}) 	AS TOTAL_PAGE  /* 전체 페이지 */
+	                 , @ROW_NUMBER                                  	AS TOTAL_COUNT /* 전제 ROW수 */
+	                 , V.*	
+				  FROM (SELECT AB.content_no
+	                      	 , AB.title
+	                      	 , AB.head
+	                      	 , AB.category
+	                      	 , AB.ps_num
+	                      	 , AB.start_date
+	                      	 , AB.end_date
+	                      	 , MB.user_name
+	                      	 , MB.email1
+	                      	 , MB.email2
+	                      	 , ( @row_number := @row_number + 1 )     	AS ID          /* MYSQL ROWNUM */
+	                      FROM agency_board               AB          				   /* 마스터코드 */
+	   		                   JOIN member MB    
+  							   USING(user_id)      
+	                         , (SELECT @ROW_NUMBER := 0) RN          				   /* MYSQL ROWNUM */
+	                     WHERE 1 = 1
+						   AND AB.board_condition = 'Y'
+	                      <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(title)">
+						   AND AB.title LIKE CONCAT('%',#{title, jdbcType=VARCHAR}, '%')
+	                      </if>
+	                      <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(category)">
+						   AND AB.category LIKE CONCAT('%',#{category, jdbcType=VARCHAR}, '%')
+	                      </if>
+                        ) V
+				 <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isEmpty(sidx)">     
+               	 ORDER BY V.content_no
+				 </if> 
+	            ) P
+		  <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(page)">
+          WHERE P.PAGE = #{page, jdbcType=NUMERIC}
+		  </if>
+	</select>
+	
+    <select id="classMemberList0001" parameterType="ParameterMap" resultType="ReservationDto">
+		SELECT RV.reserve_no
+             , RV.user_id
+             , RV.content_no
+             , RV.ps_num
+             , RV.class_date
+             , RV.reserve_num
+             , RV.reserve_time
+             , MB.user_name
+             , MB.phone1
+             , MB.phone2
+             , MB.phone3
+             , MB.email1
+             , MB.email2
+          FROM reservation RV
+	 		   JOIN member MB    
+ 			   USING(user_id)                   
+         WHERE 1 = 1
+           <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(content_no)">
+           AND RV.content_no = #{content_no} 
+           </if>
+         ORDER BY RV.class_date
+    </select>  
+    
+    <select id="classRequestList0001" parameterType="ParameterMap" resultType="BoardRequestDto">
+		SELECT BR.request_no
+             , BR.content_no
+             , BR.request_type
+             , BR.request_title
+             , BR.request_content
+             , BR.request_condition
+             , BR.request_date
+             , AB.user_id
+             , MB.user_name
+             , MB.email1
+             , MB.email2
+          FROM board_request BR
+	 		   JOIN agency_board AB    
+ 			   USING(content_no)
+ 			   LEFT JOIN member MB
+ 			   ON AB.user_id = MB.user_id                  
+         WHERE 1 = 1
+           <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(user_name)">
+           AND MB.user_name = #{user_name} 
+           </if>
+           <if test="@kr.co.ta9.pandora3.common.util.TextUtil@isNotEmpty(request_type)">
+           AND BR.request_type = #{request_type} 
+           </if>
+           AND BR.request_condition = 'N' 
+         ORDER BY request_date DESC
+    </select>  
+    
+    <select id="requestClass" parameterType="ParameterMap" resultType="AgencyBoardDto">
+		SELECT content_no
+             , user_id
+             , title
+             , ps_num
+             , category
+             , write_date
+             , image0
+             , head
+             , body
+             , image1
+             , youtube
+             , cl_addr
+             , start_date
+             , end_date
+             , start_time
+             , end_time
+          FROM agency_board
+         WHERE content_no = #{content_no}
+		   AND board_condition = 'Y'
+    </select>  
+    
+    <update id="applyRequest" parameterType="BoardRequestDto">
+		UPDATE board_request
+		   SET request_condition = 'Y' 
+		 WHERE request_no = #{request_no} 
+	</update>
+	
+    <update id="classRequestUpdate" parameterType="AgencyBoardDto">
+		UPDATE agency_board
+		   SET title 		= #{title}
+		   	 , ps_num 		= #{ps_num}
+		   	 , category 	= #{category}
+		   	 , head			= #{head}
+   <![CDATA[ , body 		= REPLACE(REPLACE(#{body}, '&#40;', '('), '&#41;', ')') ]]>
+		   	 , youtube 		= #{youtube}
+		   	 , start_date 	= #{start_date}
+		   	 , end_date 	= #{end_date}
+		   	 , start_time 	= #{start_time}
+		   	 , end_time 	= #{end_time}
+		 WHERE content_no 	= #{content_no} 
+	</update>
+	
+    <update id="classRequestDelete" parameterType="AgencyBoardDto">
+		UPDATE agency_board
+		   SET board_condition 	= 'N'
+		 WHERE content_no 		= #{content_no} 
+	</update>
+</mapper>
