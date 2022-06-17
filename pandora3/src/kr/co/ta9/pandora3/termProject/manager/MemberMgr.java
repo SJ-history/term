@@ -101,8 +101,8 @@ public class MemberMgr {
 				+ "<br/> -----------------------------------------------------------------------------------------------"
 				+ "<br/> 많은 이용 부탁드립니다.";
 		String host = "smtp.naver.com";
-		final String user = "qkrtkdwns1323@naver.com";
-		final String password = "tkdwns1323!@";
+		final String user = "";
+		final String password = "";
 		String to = (String) parameterMap.get("email");
 		Properties props = new Properties();
 		props.put("mail.smtp.host", host);
