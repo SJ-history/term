@@ -167,8 +167,8 @@ public class MemberController {
 					content += (int) (Math.random() * 10);
 				}
 				String host = "smtp.naver.com";
-				final String user = "qkrtkdwns1323@naver.com";
-				final String password = "tkdwns1323!@";
+				final String user = "";
+				final String password = "";
 				String to = mail;
 				Properties props = new Properties();
 				props.put("mail.smtp.host", host);
